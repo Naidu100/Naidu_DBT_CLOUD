@@ -1,0 +1,31 @@
+version: 2
+
+sources:
+  - name: data_feed
+    description: "Raw operational data feed containing base customer and order information synced from the source system."
+    database: "{{ env_var('DBT_DATABASE', 'analytics') }}" # Replaces with your Snowflake database name
+    schema: public # Replaces with your Snowflake schema name
+
+    tables:
+      - name: raw_customer
+        description: "Raw customer registration profile records."
+        columns:
+          - name: id
+            description: "The primary key identifier for the customer."
+            data_tests:
+              - unique
+              - not_null
+
+      - name: raw_orders
+        description: "Raw transaction orders logged by customers."
+        columns:
+          - name: id
+            description: "The primary key identifier for the order."
+            data_tests:
+              - unique
+              - not_null
+          - name: user_id
+            description: "Foreign key mapping back to raw_customer.id."
+            data_tests:
+              - not_null
+              
